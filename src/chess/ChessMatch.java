@@ -29,6 +29,11 @@ public class ChessMatch {
         board.placePiece(piece, new ChessPosition(column, row).toPosition());
     }
 
+    public boolean[][] possibleMoves(ChessPosition sourcePosition) {
+        Position position = sourcePosition.toPosition();
+        validadeSourcePosition(position);
+        return board.piece(position).possibleMoves();
+    }
     public ChessPiece performChessMove(ChessPosition sourcePosition, ChessPosition targetPosition){
         Position source = sourcePosition.toPosition();
         Position target = targetPosition.toPosition();
@@ -58,38 +63,38 @@ public class ChessMatch {
     }
 
     public void initialSetup(){
-        // Peões brancos
-        for (char i = 'a'; i<='h'; i++) {
-            placeNewPiece(i, 2, new Pawn(board, Color.WHITE));
-        }
-
-        // Peões pretos
-        for (char i = 'a'; i<='h'; i++) {
-            placeNewPiece(i, 7, new Pawn(board, Color.BLACK));
-        }
-
-        // Torres
-        placeNewPiece('a', 1, new Rook(board, Color.WHITE));
-        placeNewPiece('h', 1, new Rook(board, Color.WHITE));
-        placeNewPiece('a', 8, new Rook(board, Color.BLACK));
-        placeNewPiece('h', 8, new Rook(board, Color.BLACK));
-
-//        // Cavalos
-        placeNewPiece('b', 1, new Knight(board, Color.WHITE));
-        placeNewPiece('g', 1, new Knight(board, Color.WHITE));
-        placeNewPiece('b', 8, new Knight(board, Color.BLACK));
-        placeNewPiece('g', 8, new Knight(board, Color.BLACK));
-
-
-        // Bispos
-        placeNewPiece('c', 1, new Bishop(board, Color.WHITE));
-        placeNewPiece('f', 1, new Bishop(board, Color.WHITE));
-        placeNewPiece('c', 8, new Bishop(board, Color.BLACK));
-        placeNewPiece('f', 8, new Bishop(board, Color.BLACK));
-
-        // Rainhas
-        placeNewPiece('d', 1, new Queen(board, Color.WHITE));
-        placeNewPiece('d', 8, new Queen(board, Color.BLACK));
+//        // Peões brancos
+//        for (char i = 'a'; i<='h'; i++) {
+//            placeNewPiece(i, 2, new Pawn(board, Color.WHITE));
+//        }
+//
+//        // Peões pretos
+//        for (char i = 'a'; i<='h'; i++) {
+//            placeNewPiece(i, 7, new Pawn(board, Color.BLACK));
+//        }
+//
+//        // Torres
+//        placeNewPiece('a', 1, new Rook(board, Color.WHITE));
+//        placeNewPiece('h', 1, new Rook(board, Color.WHITE));
+//        placeNewPiece('a', 8, new Rook(board, Color.BLACK));
+//        placeNewPiece('h', 8, new Rook(board, Color.BLACK));
+//
+////        // Cavalos
+//        placeNewPiece('b', 1, new Knight(board, Color.WHITE));
+//        placeNewPiece('g', 1, new Knight(board, Color.WHITE));
+//        placeNewPiece('b', 8, new Knight(board, Color.BLACK));
+//        placeNewPiece('g', 8, new Knight(board, Color.BLACK));
+//
+//
+//        // Bispos
+//        placeNewPiece('c', 1, new Bishop(board, Color.WHITE));
+//        placeNewPiece('f', 1, new Bishop(board, Color.WHITE));
+//        placeNewPiece('c', 8, new Bishop(board, Color.BLACK));
+//        placeNewPiece('f', 8, new Bishop(board, Color.BLACK));
+//
+//        // Rainhas
+//        placeNewPiece('d', 1, new Queen(board, Color.WHITE));
+//        placeNewPiece('d', 8, new Queen(board, Color.BLACK));
 
         // Reis
         placeNewPiece('e', 1, new King(board, Color.WHITE));
