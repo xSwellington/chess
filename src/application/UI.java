@@ -1,10 +1,12 @@
 package application;
 
+import chess.ChessMatch;
 import chess.ChessPiece;
 import chess.ChessPosition;
 import chess.Color;
 
 import java.util.InputMismatchException;
+import java.util.List;
 import java.util.Scanner;
 
 public class UI {
@@ -28,10 +30,33 @@ public class UI {
     public static final String ANSI_CYAN_BACKGROUND = "\u001B[46m";
     public static final String ANSI_WHITE_BACKGROUND = "\u001B[47m";
 
+
+    public static void printMatch(){
+
+    }
+
     public static void clearScreen(){
         System.out.println("\033[H\033[2J");
         System.out.flush();
     }
+
+    public static void printMatch(ChessMatch chessMatch, List<ChessPiece> capturedList){
+        printBoard(chessMatch.getPieces());
+        System.out.println();
+        printCapturedPieces(capturedList);
+        System.out.println("Turn: " + chessMatch.getTurn());
+        if (!chessMatch.isCheckMate()) {
+            System.out.println("Waiting Player: " + chessMatch.getCurrentPlayer());
+            if (chessMatch.isCheck()) {
+                System.out.println("CHECK!!!");
+            }
+        } else {
+            System.out.println("CHECKMATE!!!");
+            System.out.println("WINNER! " + chessMatch.getCurrentPlayer());
+        }
+
+    }
+
     public static void printBoard(ChessPiece[][] pieces) {
         for (int i = 0; i < pieces.length; i++) {
             System.out.print((8 - i) + " ");
@@ -82,6 +107,16 @@ public class UI {
             throw  new InputMismatchException("Error readin ChessPostion. Invalid input a1 to h8.");
         }
 
+    }
+
+    private static void printCapturedPieces(List<ChessPiece> chessPieces){
+        List<ChessPiece> capturedWhite = chessPieces.stream().filter(piece -> piece.getColor() == Color.WHITE).toList();
+        List<ChessPiece> capturedBlack = chessPieces.stream().filter(piece -> piece.getColor() == Color.BLACK).toList();
+        System.out.println("Captured pieces");
+
+        System.out.println( "White: " +ANSI_WHITE + capturedWhite + ANSI_RESET);
+        System.out.println( "Black: " + ANSI_YELLOW + capturedBlack + ANSI_RESET);
+        System.out.println();
     }
 
 
