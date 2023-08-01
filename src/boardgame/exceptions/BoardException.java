@@ -1,4 +1,4 @@
-package boardgame;
+package boardgame.exceptions;
 
 public class BoardException extends RuntimeException{
 
