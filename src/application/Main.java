@@ -31,6 +31,12 @@ public class Main {
 
                 chessMatch.performChessMove(source, target);
 
+                if (chessMatch.getPromoted() != null) {
+                    System.out.println("Enter piece for promotion (B/N/R/Q: ");
+                    String type = sc.nextLine();
+                    chessMatch.replacePromotedPiece(type);
+                }
+
             } catch (ChessException | InputMismatchException chessException) {
                 System.out.println(chessException.getMessage());
                 sc.nextLine();
