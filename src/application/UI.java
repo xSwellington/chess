@@ -40,10 +40,10 @@ public class UI {
         System.out.flush();
     }
 
-    public static void printMatch(ChessMatch chessMatch, List<ChessPiece> capturedList) {
+    public static void printMatch(ChessMatch chessMatch) {
         printBoard(chessMatch.getPieces());
         System.out.println();
-        printCapturedPieces(capturedList);
+        printCapturedPieces(chessMatch.getCapturedPieces());
         System.out.println("Turn: " + chessMatch.getTurn());
         if (!chessMatch.isCheckMate()) {
             System.out.println("Waiting Player: " + chessMatch.getCurrentPlayer());

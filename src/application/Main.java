@@ -14,11 +14,10 @@ public class Main {
     public static void main(String[] args) {
         ChessMatch chessMatch = new ChessMatch();
         Scanner sc = new Scanner(System.in);
-        List<ChessPiece> capturedPieces = new ArrayList<>();
         while (!chessMatch.isCheckMate()) {
             try {
                 UI.clearScreen();
-                UI.printMatch(chessMatch, capturedPieces);
+                UI.printMatch(chessMatch);
                 System.out.println();
                 System.out.print("Source: ");
                 ChessPosition source = UI.readChessPosition(sc);
@@ -30,16 +29,13 @@ public class Main {
                 ChessPosition target = UI.readChessPosition(sc);
                 System.out.println();
 
-                ChessPiece capturedPiece = chessMatch.performChessMove(source, target);
-                if (capturedPiece != null) {
-                    capturedPieces.add(capturedPiece);
-                }
+                chessMatch.performChessMove(source, target);
+
             } catch (ChessException | InputMismatchException chessException) {
                 System.out.println(chessException.getMessage());
                 sc.nextLine();
             }
         }
         UI.clearScreen();
-        UI.printMatch(chessMatch, capturedPieces);
     }
 }

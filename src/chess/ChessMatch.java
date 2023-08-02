@@ -18,10 +18,14 @@ public class ChessMatch {
 
     private boolean check;
     private boolean checkMate;
+    private ChessPiece enPassantVunerable;
 
     private final List<Piece> capturedPieces = new ArrayList<>();
     private final List<Piece> piecesOnTheBoard = new ArrayList<>();
 
+    public ChessPiece getEnPassantVunerable() {
+        return enPassantVunerable;
+    }
 
     public boolean isCheckMate() {
         return checkMate;
@@ -44,6 +48,10 @@ public class ChessMatch {
 
     public Color getCurrentPlayer() {
         return currentPlayer;
+    }
+
+    public List<ChessPiece> getCapturedPieces() {
+        return capturedPieces.stream().map(piece -> (ChessPiece) piece).toList();
     }
 
     private void nextTurn() {
@@ -131,12 +139,20 @@ public class ChessMatch {
             throw new ChessException("You can't put yourself in check.");
         }
 
+        ChessPiece movedPiece = (ChessPiece) board.piece(target);
+
         check = testCheck(opponent(currentPlayer));
 
         if (testCheckMate(opponent(currentPlayer)))
             checkMate = true;
         else
             nextTurn();
+
+        if (movedPiece instanceof Pawn && target.getRow() == source.getRow() - 2 ||  (target.getRow() == source.getRow() + 2))
+            enPassantVunerable = movedPiece;
+        else
+            enPassantVunerable = null;
+
         return (ChessPiece) capturedPiece;
     }
 
@@ -145,10 +161,8 @@ public class ChessMatch {
         p.increaseMoveCount();
         Piece capturedPiece = board.removePiece(target);
         board.placePiece(p, target);
-        if (capturedPiece != null) {
-            piecesOnTheBoard.remove(capturedPiece);
-            capturedPieces.add(capturedPiece);
-        }
+
+
 
         if (p instanceof King && target.getCol() == source.getCol() + 2) {
             Position sourceRook = new Position(source.getRow(), source.getCol()+3);
@@ -164,6 +178,20 @@ public class ChessMatch {
             board.placePiece(rook, targetRook);
         }
 
+        if (p instanceof Pawn) {
+            if (source.getCol() != target.getCol() && capturedPiece == null){
+                int row = target.getRow();
+                row += p.getColor() == Color.WHITE ? 1 : - 1;
+                Position pawnPosition = new Position(row, target.getCol());
+                capturedPiece = board.removePiece(pawnPosition);
+            }
+        }
+
+        if (capturedPiece != null) {
+            piecesOnTheBoard.remove(capturedPiece);
+            capturedPieces.add(capturedPiece);
+        }
+
         return capturedPiece;
     }
 
@@ -171,6 +199,7 @@ public class ChessMatch {
         ChessPiece p = (ChessPiece) board.removePiece(target);
         p.descreaseMoveCount();
         board.placePiece(p, source);
+
         if (capturedPiece != null) {
             board.placePiece(capturedPiece, target);
             capturedPieces.remove(capturedPiece);
@@ -192,6 +221,15 @@ public class ChessMatch {
             board.placePiece(rook, sourceRook);
             rook.descreaseMoveCount();
         }
+
+        if (p instanceof Pawn) {
+            if (source.getCol() != target.getCol() && capturedPiece == enPassantVunerable){
+                ChessPiece pawn = (ChessPiece) board.removePiece(target);
+                int row = p.getColor() == Color.WHITE ? 3 : 4;
+                Position pawnPosition = new Position(row, target.getCol());
+                board.placePiece(pawn, pawnPosition);
+            }
+        }
     }
 
     private void validadeSourcePosition(Position source) {
@@ -211,12 +249,12 @@ public class ChessMatch {
     public void initialSetup() {
         // Peões brancos
         for (char i = 'a'; i <= 'h'; i++) {
-            placeNewPiece(i, 2, new Pawn(board, Color.WHITE));
+            placeNewPiece(i, 2, new Pawn(board, Color.WHITE, this));
         }
 
         // Peões pretos
         for (char i = 'a'; i <= 'h'; i++) {
-            placeNewPiece(i, 7, new Pawn(board, Color.BLACK));
+            placeNewPiece(i, 7, new Pawn(board, Color.BLACK, this));
         }
 
         // Torres
